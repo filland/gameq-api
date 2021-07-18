@@ -4,20 +4,20 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Auction } from './auction.entity';
 import { User } from 'src/auth/user.entity';
 import { CreateAuctionDto } from './dto/create-auction.dto';
+import { ParticipantsRepository } from 'src/participants/participants.repository';
 
 @Injectable()
 export class AuctionsService {
 
-  constructor(@InjectRepository(AuctionsRepository) private auctionsRepository: AuctionsRepository) { }
+  constructor(
+    @InjectRepository(AuctionsRepository) private auctionsRepository: AuctionsRepository,
+    @InjectRepository(ParticipantsRepository) private participantsRepository: ParticipantsRepository) { }
 
   async getAuctionById(id: string): Promise<Auction> {
-
     const result = await this.auctionsRepository.findOne({ where: { id } });
-
     if (!result) {
       throw new NotFoundException(`Auction with id = ${id} not found`);
     }
-
     return result;
   }
 
@@ -26,9 +26,7 @@ export class AuctionsService {
   }
 
   async createAuction(rq: CreateAuctionDto, user: User): Promise<Auction> {
-
     const { description, numberOfWinners, hoursToClose } = rq;
-
     const createdDate = new Date();
     const closeDate = new Date();
     closeDate.setTime(createdDate.getTime() + (hoursToClose * 60 * 60 * 1000))
@@ -41,11 +39,15 @@ export class AuctionsService {
       closed: false,
       owner: user
     });
-
     return await this.auctionsRepository.save(auction);
   }
 
   async joinAuction(auctionId: string, user: User) {
-
+    const auction = await this.getAuctionById(auctionId);
+    const participant = this.participantsRepository.create({
+      auctionId: auction.id,
+      userId: user.id
+    });
+    await this.participantsRepository.save(participant);
   }
 }

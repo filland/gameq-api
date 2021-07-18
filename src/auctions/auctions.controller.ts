@@ -38,9 +38,9 @@ export class AuctionsController {
   }
 
   @Post("/:id/join")
-  joinAuction(@Param('id') auctionId: string, @GetUser() user: User) {
+  joinAuction(@Param('id') auctionId: string, @GetUser() user: User): Promise<void> {
     this.logger.debug(`User ${user.username} is joining auction ${auctionId}`);
-    this.auctionService.joinAuction(auctionId, user);
+    return this.auctionService.joinAuction(auctionId, user);
   }
 
 }

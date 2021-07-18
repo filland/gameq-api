@@ -5,6 +5,6 @@ import { ParticipantsRepository } from './participants.repository';
 @Module({
   imports: [TypeOrmModule.forFeature([ParticipantsRepository])],
   controllers: [],
-  providers: []
+  providers: [],
 })
 export class ParticipantsModule { }
