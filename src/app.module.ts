@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TasksModule } from './tasks/tasks.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
+import { AuctionsModule } from './auctions/auctions.module';
+import { ParticipantsModule } from './participants/participants.module';
 
 @Module({
   imports: [
@@ -12,7 +13,9 @@ import { configValidationSchema } from './config.schema';
       envFilePath: `.env.stage.${process.env.STAGE}`,
       validationSchema: configValidationSchema
     }),
-    TasksModule,
+    AuthModule,
+    AuctionsModule,
+    ParticipantsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -31,8 +34,7 @@ import { configValidationSchema } from './config.schema';
           synchronize: true
         };
       }
-    }),
-    AuthModule
+    })
   ],
   providers: [],
 })

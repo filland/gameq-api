@@ -1,4 +1,5 @@
-import { Task } from '../tasks/task.entity';
+import { Exclude } from 'class-transformer';
+import { Auction } from 'src/auctions/auction.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -10,16 +11,15 @@ export class User {
   @Column({ unique: true })
   username: string
 
+  @Column({ unique: true })
+  @Exclude({ toPlainOnly: true })
+  email: string
+
   @Column()
+  @Exclude({ toPlainOnly: true })
   password: string
 
-  @OneToMany(
-    // type of the target
-    _type => Task,
-    // how current entity is called from the target
-    task => task.user,
-    // fetching strategy
-    { eager: true })
-  tasks: Task[]
-
+  @OneToMany(() => Auction, auction => auction.owner, { eager: false })
+  @Exclude({ toPlainOnly: true })
+  ownedAuctions: Promise<Auction[]>
 }
