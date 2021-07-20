@@ -3,7 +3,7 @@ import { User } from 'src/auth/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Auction {
+export class Queue {
 
   @PrimaryGeneratedColumn('uuid')
   id: string
@@ -23,11 +23,11 @@ export class Auction {
   @Column({ default: false })
   closed: boolean
 
-  @ManyToOne(() => User, user => user.ownedAuctions)
+  @ManyToOne(() => User, user => user.ownedQueues)
   owner: User
 
   // @ManyToMany(() => User, { eager: false })
-  // @JoinTable({ name: "auctions_users" })
+  // @JoinTable({ name: "queues_users" })
   // @Exclude({ toPlainOnly: true })
   // participants: User[]
 }

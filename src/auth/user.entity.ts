@@ -1,5 +1,5 @@
 import { Exclude } from 'class-transformer';
-import { Auction } from 'src/auctions/auction.entity';
+import { Queue } from 'src/queues/queue.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
@@ -19,7 +19,7 @@ export class User {
   @Exclude({ toPlainOnly: true })
   password: string
 
-  @OneToMany(() => Auction, auction => auction.owner, { eager: false })
+  @OneToMany(() => Queue, queue => queue.owner, { eager: false })
   @Exclude({ toPlainOnly: true })
-  ownedAuctions: Promise<Auction[]>
+  ownedQueues: Promise<Queue[]>
 }

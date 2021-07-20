@@ -3,8 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
-import { AuctionsModule } from './auctions/auctions.module';
+import { QueuesModule } from './queues/queues.module';
 import { ParticipantsModule } from './participants/participants.module';
+import { VotesModule } from './votes/votes.module';
 
 @Module({
   imports: [
@@ -14,8 +15,9 @@ import { ParticipantsModule } from './participants/participants.module';
       validationSchema: configValidationSchema
     }),
     AuthModule,
-    AuctionsModule,
+    QueuesModule,
     ParticipantsModule,
+    VotesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

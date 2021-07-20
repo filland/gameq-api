@@ -3,9 +3,9 @@ import { Entity, PrimaryColumn } from 'typeorm';
 @Entity()
 export class Participant {
 
-  @PrimaryColumn()
-  auctionId: string
+  @PrimaryColumn({ type: "uuid" })
+  queueId: string
 
-  @PrimaryColumn()
+  @PrimaryColumn({ type: "uuid" })
   userId: string
 }

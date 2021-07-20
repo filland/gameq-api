@@ -1,5 +1,5 @@
 
-export class CreateAuctionDto {
+export class CreateQueueDto {
 
   description: string
   numberOfWinners: number

@@ -1,7 +1,7 @@
 {
   "name": "gameq",
   "version": "0.0.1",
-  "description": "Auction app for influencers (streamers, bloggers, etc.)",
+  "description": "Queue app for influencers (streamers, bloggers, etc.)",
   "author": "Alexey Kurbatov",
   "private": true,
   "license": "UNLICENSED",
