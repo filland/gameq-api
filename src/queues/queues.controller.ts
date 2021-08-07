@@ -7,6 +7,7 @@ import { User } from 'src/auth/user.entity';
 import { Queue } from './queue.entity';
 import { CreateQueueDto } from './dto/create-queue.dto';
 import { QueueParticipantDto } from './dto/queue-participant.dto';
+import { QueueDto } from './dto/queue.dto';
 
 @Controller('/api/v1/queues')
 export class QueuesController {
@@ -16,7 +17,7 @@ export class QueuesController {
   constructor(private queueService: QueuesService) { }
 
   @Get('/:id')
-  getQueueById(@Param('id') id: string): Promise<Queue> {
+  getQueueById(@Param('id') id: string): Promise<QueueDto> {
     // this.logger.debug(`Retrieving queue by id = ${id}`);
     return this.queueService.getQueueById(id);
   }
@@ -27,27 +28,33 @@ export class QueuesController {
     return this.queueService.getQueuesParticipants(id);
   }
 
+  @Get('/:id/participants/current-user')
+  @UseGuards(AuthGuard())
+  getQueuesParticipantWhenParticipantIsCurrentUser(@Param('id') queueId: string, @GetUser() user: User): Promise<QueueParticipantDto> {
+    // this.logger.debug(`Retrieving queue by id = ${id}`);
+    return this.queueService.getQueueParticipant(queueId, user.id);
+  }
 
   @Get('/owner')
-  getOwnQueues(@GetUser() user: User): Promise<Queue[]> {
+  getOwnQueues(@GetUser() user: User): Promise<QueueDto[]> {
     return this.queueService.getOwnQueues(user);
   }
 
   @Get('/participated')
-  getParticipatedQueues(@GetUser() _user: User): Promise<Queue[]> {
+  getParticipatedQueues(@GetUser() _user: User): Promise<QueueDto[]> {
     throw new InternalServerErrorException();
   }
 
   @Post()
   @UseGuards(AuthGuard())
-  createQueue(@Body() rq: CreateQueueDto, @GetUser() user: User): Promise<Queue> {
+  createQueue(@Body() rq: CreateQueueDto, @GetUser() user: User): Promise<QueueDto> {
     this.logger.debug(`User ${user.username} is creating a new queue: ${JSON.stringify(rq)}`);
     return this.queueService.createQueue(rq, user);
   }
 
   @Post("/:id/join")
   @UseGuards(AuthGuard())
-  joinQueue(@Param('id') queueId: string, @GetUser() user: User): Promise<void> {
+  joinQueue(@Param('id') queueId: string, @GetUser() user: User): Promise<QueueParticipantDto> {
     this.logger.debug(`User ${user.username} is joining queue ${queueId}`);
     return this.queueService.joinQueue(queueId, user);
   }

@@ -6,10 +6,11 @@ import { QueuesService } from './queues.service';
 import { QueuesController } from './queues.controller';
 import { ParticipantsRepository } from 'src/participants/participants.repository';
 import { VotesRepository } from 'src/votes/votes.repository';
+import { QueueConveter } from './converter/queue.converter';
 
 @Module({
   imports: [TypeOrmModule.forFeature([QueuesRepository, ParticipantsRepository, VotesRepository]), AuthModule],
   controllers: [QueuesController],
-  providers: [QueuesService],
+  providers: [QueuesService, QueueConveter],
 })
 export class QueuesModule { }

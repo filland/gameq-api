@@ -27,6 +27,4 @@ export class QueuesRepository extends Repository<Queue> {
 
     return result;
   }
-
-
 }
