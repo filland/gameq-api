@@ -33,8 +33,8 @@ export class QueuesService {
     return this.queueConverter.convert(result);
   }
 
-  async getQueuesParticipants(queueId: string): Promise<string[]> {
-    return await this.queuesRepository.findAllParticipantsSortedByVotes(queueId);
+  async getQueuesParticipants(queueId: string, page: number): Promise<string[]> {
+    return await this.participantsRepository.findAllParticipantsSortedByVotes(queueId, page);
   }
 
   async getQueueParticipant(queueId: string, userId: string): Promise<QueueParticipantDto> {
@@ -94,9 +94,9 @@ export class QueuesService {
     return dto;
   }
 
-  async voteForParticipant(queueId: string, participantId: string, user: User) {
+  async voteForParticipant(queueId: string, userId: string, user: User) {
     const queue = await this.findQueueById(queueId);
-    const participant = await this.participantsRepository.findOne({ where: { userId: participantId } });
+    const participant = await this.participantsRepository.findOne({ where: { queueId, userId } });
 
     const vote = this.votesRepository.create({
       queueId: queue.id,
@@ -105,6 +105,17 @@ export class QueuesService {
       votes: 1
     });
 
+    await this.participantsRepository.update(
+      { queueId: participant.queueId, userId: participant.userId },
+      { votes: participant.votes + 1 }
+    );
+
     await this.votesRepository.save(vote);
+  }
+
+  async getParticipantPlace(queueId: string, userId: string) {
+    const result = await this.participantsRepository.findParticipantPlace(queueId, userId)
+    result["beforeParticipants"] = Number.parseInt(result.beforeParticipants) + 1;
+    return result;
   }
 }

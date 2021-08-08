@@ -1,10 +1,9 @@
-import { Body, Controller, Get, InternalServerErrorException, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, InternalServerErrorException, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { QueuesService } from './queues.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Logger } from '@nestjs/common';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
-import { Queue } from './queue.entity';
 import { CreateQueueDto } from './dto/create-queue.dto';
 import { QueueParticipantDto } from './dto/queue-participant.dto';
 import { QueueDto } from './dto/queue.dto';
@@ -23,9 +22,9 @@ export class QueuesController {
   }
 
   @Get('/:id/participants')
-  getQueuesParticipants(@Param('id') id: string): Promise<string[]> {
+  getQueuesParticipants(@Param('id') id: string, @Query("page") page: number): Promise<string[]> {
     // this.logger.debug(`Retrieving queue by id = ${id}`);
-    return this.queueService.getQueuesParticipants(id);
+    return this.queueService.getQueuesParticipants(id, page);
   }
 
   @Get('/:id/participants/current-user')
@@ -34,6 +33,12 @@ export class QueuesController {
     // this.logger.debug(`Retrieving queue by id = ${id}`);
     return this.queueService.getQueueParticipant(queueId, user.id);
   }
+
+  @Get("/:id/participants/:userId/place")
+  getParticipantPlace(@Param('id') queueId: string, @Param('userId') userId: string,): Promise<any> {
+    return this.queueService.getParticipantPlace(queueId, userId);
+  }
+
 
   @Get('/owner')
   getOwnQueues(@GetUser() user: User): Promise<QueueDto[]> {

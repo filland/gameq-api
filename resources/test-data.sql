@@ -33,13 +33,13 @@ INSERT INTO public.queue (id, description, number_of_winners, close_date, create
 
 
 
-INSERT INTO public.participant ("queueId", "userId") values
-('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'b366c751-1e5f-4f30-a898-fec5cad27678'),
-('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'c8ccdaa1-8390-4b9e-a7f6-120d2e0d2464'),
-('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'fe94ab1c-b91e-4b8a-b5f1-c5378a4b87ac'),
-('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'a6e63f47-b222-4090-aa0b-596d0f20f429'),
-('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', '4c03e6d9-e4e7-4b88-b803-3f4becc69999'),
-('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', '9bb1c3cf-ae39-4807-99a0-4e645e771ac7');
+INSERT INTO public.participant ("queueId", "userId", "votes") values
+('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'b366c751-1e5f-4f30-a898-fec5cad27678', 2),
+('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'c8ccdaa1-8390-4b9e-a7f6-120d2e0d2464', 2),
+('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'fe94ab1c-b91e-4b8a-b5f1-c5378a4b87ac', 10),
+('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'a6e63f47-b222-4090-aa0b-596d0f20f429', 13),
+('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', '4c03e6d9-e4e7-4b88-b803-3f4becc69999', 44),
+('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', '9bb1c3cf-ae39-4807-99a0-4e645e771ac7', 1);
 
 
 INSERT INTO public.vote ("queueId", "voterId", "participantId") values

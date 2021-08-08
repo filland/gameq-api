@@ -1,4 +1,5 @@
 import { User } from 'src/auth/user.entity';
+import { Vote } from 'src/votes/vote.entity';
 import { EntityRepository, getManager, Repository } from 'typeorm';
 import { Participant } from './participant.entity';
 
@@ -21,5 +22,49 @@ export class ParticipantsRepository extends Repository<Participant> {
       .getRawOne();
 
     return participantAndUsername;
+  }
+
+  async findAllParticipantsSortedByVotes(queueId: string, page: number) {
+
+    const PARTICIPANTS_ON_PAGE = 50;
+    const pagesToSkip = page > 0 ? PARTICIPANTS_ON_PAGE * (page - 1) : 0;
+
+    const users = getManager().createQueryBuilder()
+      .select("u.username", "username")
+      .addSelect("u.id", "userId")
+      .from(User, "u");
+
+    const participants = getManager().createQueryBuilder()
+      .select("u.username", "username")
+      .addSelect("u.\"userId\"", "userId")
+      .addSelect("p.\"votes\"", "votes")
+      .from(Participant, "p")
+      .innerJoin("(" + users.getQuery() + ")", "u", "p.\"userId\" = u.\"userId\"")
+      .skip(pagesToSkip)
+      .take(PARTICIPANTS_ON_PAGE)
+      .orderBy("p.\"votes\"", "DESC")
+      .where("p.queueId = :queueId", { queueId })
+      .getRawMany();
+
+    return participants;
+  }
+
+  async findParticipantPlace(queueId: string, userId: string): Promise<any> {
+
+    const participant = getManager().createQueryBuilder()
+      .select("p.votes", "votes")
+      .from(Participant, "p")
+      .where("p.userId = :userId ", { userId })
+      .andWhere("p.queueId = :queueId", { queueId })
+
+    const result = getManager().createQueryBuilder()
+      .select("count(p.userId)", "beforeParticipants")
+      .from(Participant, "p")
+      .where("p.votes > (" + participant.getQuery() + ")")
+      .setParameters(participant.getParameters())
+      .andWhere("p.queueId = :queueId", { queueId })
+      .getRawOne();
+
+    return result;
   }
 }

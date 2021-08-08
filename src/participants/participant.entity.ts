@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Participant {
@@ -8,4 +8,7 @@ export class Participant {
 
   @PrimaryColumn({ type: "uuid" })
   userId: string
+
+  @Column({ nullable: true })
+  votes: number
 }
