@@ -15,6 +15,19 @@ export class QueuesController {
 
   constructor(private queueService: QueuesService) { }
 
+  @Get("/owner")
+  @UseGuards(AuthGuard())
+  getOwnQueues(@GetUser() user: User): Promise<QueueDto[]> {
+    this.logger.debug(`Retrieving own queues for user with id = ${user.id}`);
+    return this.queueService.getOwnQueues(user);
+  }
+
+  @Get("/participated")
+  @UseGuards(AuthGuard())
+  getParticipatedQueues(@GetUser() user: User): Promise<QueueDto[]> {
+    return this.queueService.getParticipatedQueues(user);
+  }
+
   @Get('/:id')
   getQueueById(@Param('id') id: string): Promise<QueueDto> {
     // this.logger.debug(`Retrieving queue by id = ${id}`);
@@ -37,17 +50,6 @@ export class QueuesController {
   @Get("/:id/participants/:userId/place")
   getParticipantPlace(@Param('id') queueId: string, @Param('userId') userId: string,): Promise<any> {
     return this.queueService.getParticipantPlace(queueId, userId);
-  }
-
-
-  @Get('/owner')
-  getOwnQueues(@GetUser() user: User): Promise<QueueDto[]> {
-    return this.queueService.getOwnQueues(user);
-  }
-
-  @Get('/participated')
-  getParticipatedQueues(@GetUser() _user: User): Promise<QueueDto[]> {
-    throw new InternalServerErrorException();
   }
 
   @Post()

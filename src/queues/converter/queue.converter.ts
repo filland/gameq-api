@@ -17,7 +17,7 @@ export class QueueConveter {
     const result: QueueDto[] = [];
     for (let i = 0; i < queueEntities.length; i++) {
       const queue = queueEntities[i];
-      result.push(this.convert(queue));
+      result.push(await this.convert(queue));
     }
     return result;
   }

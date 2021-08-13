@@ -59,7 +59,16 @@ export class QueuesService {
   }
 
   async getOwnQueues(user: User): Promise<QueueDto[]> {
-    return this.queueConverter.convertAll(await user.ownedQueues);
+    const result = await this.queuesRepository.find({
+      relations: ["owner"],
+      where: { owner: user }
+    });
+    return this.queueConverter.convertAll(result);
+  }
+
+  async getParticipatedQueues(user: User): Promise<QueueDto[]> {
+    const queues = await this.queuesRepository.findParticipatedQueues(user);
+    return this.queueConverter.convertAll(queues);;
   }
 
   async createQueue(rq: CreateQueueDto, user: User): Promise<QueueDto> {

@@ -19,7 +19,7 @@ export class User {
   @Exclude({ toPlainOnly: true })
   password: string
 
-  @OneToMany(() => Queue, queue => queue.owner, { eager: false })
+  @OneToMany(() => Queue, queue => queue.owner, { eager: false, cascade: true })
   @Exclude({ toPlainOnly: true })
   ownedQueues: Promise<Queue[]>
 }

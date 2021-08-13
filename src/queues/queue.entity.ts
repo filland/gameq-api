@@ -1,6 +1,5 @@
-import { Exclude } from 'class-transformer';
 import { User } from 'src/auth/user.entity';
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Queue {
