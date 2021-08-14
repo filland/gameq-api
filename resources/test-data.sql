@@ -28,7 +28,7 @@ INSERT INTO public."user"(id, username, email, password) VALUES
 
 
 
-INSERT INTO public.queue (id, description, number_of_winners, close_date, created_date, closed, "ownerId") values
+INSERT INTO public.queue (id, description, number_of_winners, closeDate, createdDate, closed, "ownerId") values
 ('fe1ac3ba-e87a-44fe-896d-722bbd09abc2', 'queue1', 2, '2021-07-23T18:54:23.098Z', '2021-07-20T18:54:23.098Z', false, 'b366c751-1e5f-4f30-a898-fec5cad27678');
 
 

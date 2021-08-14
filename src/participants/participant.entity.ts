@@ -11,4 +11,7 @@ export class Participant {
 
   @Column({ nullable: true })
   votes: number
+
+  @Column()
+  joinDate: Date
 }

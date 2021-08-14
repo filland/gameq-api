@@ -14,10 +14,10 @@ export class Queue {
   number_of_winners: number
 
   @Column()
-  close_date: Date
+  closeDate: Date
 
   @Column()
-  created_date: Date
+  createdDate: Date
 
   @Column({ default: false })
   closed: boolean

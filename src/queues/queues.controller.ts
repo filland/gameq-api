@@ -47,11 +47,6 @@ export class QueuesController {
     return this.queueService.getQueueParticipant(queueId, user.id);
   }
 
-  @Get("/:id/participants/:userId/place")
-  getParticipantPlace(@Param('id') queueId: string, @Param('userId') userId: string,): Promise<any> {
-    return this.queueService.getParticipantPlace(queueId, userId);
-  }
-
   @Post()
   @UseGuards(AuthGuard())
   createQueue(@Body() rq: CreateQueueDto, @GetUser() user: User): Promise<QueueDto> {

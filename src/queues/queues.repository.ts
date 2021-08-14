@@ -10,6 +10,7 @@ export class QueuesRepository extends Repository<Queue> {
 
     const participatedQueuesIds = getManager().createQueryBuilder()
       .select("p.queueId", "queueId")
+      .addSelect("p.joinDate", "joinDate")
       .from(Participant, "p")
       .distinct(true)
       .where("p.userId= :userId", { userId: user.id });
@@ -20,6 +21,7 @@ export class QueuesRepository extends Repository<Queue> {
       .innerJoinAndSelect("q.owner", "user", "user.id = :userId", { userId: user.id })
       .innerJoin("(" + participatedQueuesIds.getQuery() + ")", "qid", "q.id = qid.\"queueId\"")
       .setParameters(participatedQueuesIds.getParameters())
+      .orderBy("q.createdDate", "DESC")
       .getMany();
 
     return queues;

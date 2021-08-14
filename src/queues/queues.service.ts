@@ -61,7 +61,10 @@ export class QueuesService {
   async getOwnQueues(user: User): Promise<QueueDto[]> {
     const result = await this.queuesRepository.find({
       relations: ["owner"],
-      where: { owner: user }
+      where: { owner: user },
+      order: {
+        createdDate: "DESC"
+      },
     });
     return this.queueConverter.convertAll(result);
   }
@@ -80,8 +83,8 @@ export class QueuesService {
     const queue: Queue = await this.queuesRepository.save({
       description,
       number_of_winners: numberOfWinners,
-      created_date: createdDate,
-      close_date: closeDate,
+      createdDate: createdDate,
+      closeDate: closeDate,
       closed: false,
       owner: user
     });
@@ -92,7 +95,8 @@ export class QueuesService {
     const queue = await this.findQueueById(queueId);
     const participant = this.participantsRepository.create({
       queueId: queue.id,
-      userId: user.id
+      userId: user.id,
+      joinDate: new Date()
     });
     await this.participantsRepository.save(participant);
 
@@ -120,11 +124,5 @@ export class QueuesService {
     );
 
     await this.votesRepository.save(vote);
-  }
-
-  async getParticipantPlace(queueId: string, userId: string) {
-    const result = await this.participantsRepository.findParticipantPlace(queueId, userId)
-    result["beforeParticipants"] = Number.parseInt(result.beforeParticipants) + 1;
-    return result;
   }
 }
