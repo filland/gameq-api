@@ -9,7 +9,7 @@ export class Participant {
   @PrimaryColumn({ type: "uuid" })
   userId: string
 
-  @Column({ nullable: true })
+  @Column()
   votes: number
 
   @Column()

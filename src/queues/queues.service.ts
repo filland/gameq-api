@@ -96,7 +96,8 @@ export class QueuesService {
     const participant = this.participantsRepository.create({
       queueId: queue.id,
       userId: user.id,
-      joinDate: new Date()
+      joinDate: new Date(),
+      votes: 0
     });
     await this.participantsRepository.save(participant);
 

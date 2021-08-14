@@ -29,17 +29,12 @@ export class ParticipantsRepository extends Repository<Participant> {
     const PARTICIPANTS_ON_PAGE = 50;
     const pagesToSkip = page > 0 ? PARTICIPANTS_ON_PAGE * (page - 1) : 0;
 
-    const users = getManager().createQueryBuilder()
-      .select("u.username", "username")
-      .addSelect("u.id", "userId")
-      .from(User, "u");
-
     const participants = getManager().createQueryBuilder()
       .select("u.username", "username")
-      .addSelect("u.\"userId\"", "userId")
+      .addSelect("u.\"id\"", "userId")
       .addSelect("p.\"votes\"", "votes")
       .from(Participant, "p")
-      .innerJoin("(" + users.getQuery() + ")", "u", "p.\"userId\" = u.\"userId\"")
+      .innerJoinAndSelect(User, "u", "p.userId = u.id")
       .skip(pagesToSkip)
       .take(PARTICIPANTS_ON_PAGE)
       .orderBy("p.\"votes\"", "DESC")
