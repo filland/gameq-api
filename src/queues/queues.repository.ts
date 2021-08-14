@@ -18,7 +18,7 @@ export class QueuesRepository extends Repository<Queue> {
     const queues = getManager().createQueryBuilder()
       .select("q")
       .from(Queue, "q")
-      .innerJoinAndSelect("q.owner", "user", "user.id = :userId", { userId: user.id })
+      .innerJoinAndSelect("q.owner", "user")
       .innerJoin("(" + participatedQueuesIds.getQuery() + ")", "qid", "q.id = qid.\"queueId\"")
       .setParameters(participatedQueuesIds.getParameters())
       .orderBy("q.createdDate", "DESC")
