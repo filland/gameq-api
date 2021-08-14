@@ -44,18 +44,22 @@ export class QueuesService {
       throw new NotFoundException(`user ${userId} is not a participant of queue`);
     }
 
-    const { username } = participant;
+    const place = await this.getParticipantPlace(queueId, userId);
 
-    const count = await this.votesRepository.count({
-      where: { "queueId": queueId, "participantId": userId }
-    });
+    const { username, votes } = participant;
 
     const dto: QueueParticipantDto = {
-      username: username,
-      votes: count
+      username,
+      votes,
+      place
     }
 
     return dto;
+  }
+
+  async getParticipantPlace(queueId: string, userId: string): Promise<number> {
+    const result = await this.participantsRepository.findParticipantPlace(queueId, userId)
+    return Number.parseInt(result.beforeParticipants) + 1;
   }
 
   async getOwnQueues(user: User): Promise<QueueDto[]> {
@@ -92,18 +96,21 @@ export class QueuesService {
   }
 
   async joinQueue(queueId: string, user: User): Promise<QueueParticipantDto> {
+    const { id, username } = user;
     const queue = await this.findQueueById(queueId);
     const participant = this.participantsRepository.create({
       queueId: queue.id,
-      userId: user.id,
+      userId: id,
       joinDate: new Date(),
       votes: 0
     });
     await this.participantsRepository.save(participant);
+    const place = await this.getParticipantPlace(queueId, id);
 
     const dto: QueueParticipantDto = {
-      username: user.username,
-      votes: 0
+      username: username,
+      votes: 0,
+      place
     }
     return dto;
   }
