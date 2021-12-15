@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { QueuesRepository } from './queues.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from './queue.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/user/user.entity';
 import { CreateQueueDto } from './dto/create-queue.dto';
 import { ParticipantsRepository } from 'src/participants/participants.repository';
 import { VotesRepository } from 'src/votes/votes.repository';

@@ -1,4 +1,4 @@
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/user/user.entity';
 import { Participant } from 'src/participants/participant.entity';
 import { EntityRepository, getManager, Repository } from 'typeorm';
 import { Queue } from './queue.entity';

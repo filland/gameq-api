@@ -1,4 +1,4 @@
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/user/user.entity';
 import { Vote } from 'src/votes/vote.entity';
 import { EntityRepository, getManager, Repository } from 'typeorm';
 import { Participant } from './participant.entity';

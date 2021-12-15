@@ -2,11 +2,11 @@ import { Body, Controller, Get, InternalServerErrorException, Param, Post, Query
 import { QueuesService } from './queues.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Logger } from '@nestjs/common';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/user/user.entity';
 import { CreateQueueDto } from './dto/create-queue.dto';
 import { QueueParticipantDto } from './dto/queue-participant.dto';
 import { QueueDto } from './dto/queue.dto';
+import { GetUser } from 'src/user/get-user.decorator';
 
 @Controller('/api/v1/queues')
 export class QueuesController {
