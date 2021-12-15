@@ -1,4 +1,4 @@
-import { Body, Controller, Get, InternalServerErrorException, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { QueuesService } from './queues.service';
 import { AuthGuard } from '@nestjs/passport';
 import { Logger } from '@nestjs/common';
@@ -7,13 +7,17 @@ import { CreateQueueDto } from './dto/create-queue.dto';
 import { QueueParticipantDto } from './dto/queue-participant.dto';
 import { QueueDto } from './dto/queue.dto';
 import { GetUser } from 'src/user/get-user.decorator';
+import { ParticipantsService } from 'src/participants/participants.service';
 
 @Controller('/api/v1/queues')
 export class QueuesController {
 
   private logger = new Logger("QueuesController");
 
-  constructor(private queueService: QueuesService) { }
+  constructor(
+    private queueService: QueuesService,
+    private participantsService: ParticipantsService
+  ) { }
 
   @Get("/owner")
   @UseGuards(AuthGuard())
@@ -63,9 +67,11 @@ export class QueuesController {
 
   @Post("/:queueId/vote/:participantId")
   @UseGuards(AuthGuard())
-  voteForParticipant(@Param('queueId') queueId: string, @Param('participantId') participantId: string, @GetUser() user: User): Promise<void> {
+  voteForParticipant(@Param('queueId') queueId: string,
+    @Param('participantId') participantId: string,
+    @GetUser() user: User): Promise<void> {
     this.logger.debug(`User ${user.id} is voting for ${participantId}`);
-    return this.queueService.voteForParticipant(queueId, participantId, user);
+    return this.participantsService.voteForParticipant(queueId, participantId, user);
   }
 
 }

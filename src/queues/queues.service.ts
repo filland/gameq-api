@@ -4,23 +4,21 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Queue } from './queue.entity';
 import { User } from 'src/user/user.entity';
 import { CreateQueueDto } from './dto/create-queue.dto';
-import { ParticipantsRepository } from 'src/participants/participants.repository';
-import { VotesRepository } from 'src/votes/votes.repository';
 import { QueueConveter } from './converter/queue.converter';
 import { QueueDto } from './dto/queue.dto';
 import { QueueParticipantDto } from './dto/queue-participant.dto';
+import { ParticipantsService } from 'src/participants/participants.service';
 
 @Injectable()
 export class QueuesService {
 
   constructor(
     @InjectRepository(QueuesRepository) private queuesRepository: QueuesRepository,
-    @InjectRepository(ParticipantsRepository) private participantsRepository: ParticipantsRepository,
-    @InjectRepository(VotesRepository) private votesRepository: VotesRepository,
+    private participantsService: ParticipantsService,
     private queueConverter: QueueConveter
   ) { }
 
-  private async findQueueById(id: string): Promise<Queue> {
+  async findQueueById(id: string): Promise<Queue> {
     const result = await this.queuesRepository.findOne(id, { relations: ["owner"] });
     if (!result) {
       throw new NotFoundException(`Queue with id = ${id} not found`);
@@ -34,31 +32,26 @@ export class QueuesService {
   }
 
   async getQueuesParticipants(queueId: string, page: number): Promise<string[]> {
-    return await this.participantsRepository.findAllParticipantsSortedByVotes(queueId, page);
+    return await this.participantsService.findAllParticipantsSortedByVotes(queueId, page);
   }
 
   async getQueueParticipant(queueId: string, userId: string): Promise<QueueParticipantDto> {
-    const participant = await this.participantsRepository.findParticipantAndUsername(queueId, userId);
-
+    const participant = await this.participantsService.findParticipantAndUsername(queueId, userId);
     if (!participant) {
       throw new NotFoundException(`user ${userId} is not a participant of queue`);
     }
-
     const place = await this.getParticipantPlace(queueId, userId);
-
     const { username, votes } = participant;
-
     const dto: QueueParticipantDto = {
       username,
       votes,
       place
     }
-
     return dto;
   }
 
   async getParticipantPlace(queueId: string, userId: string): Promise<number> {
-    const result = await this.participantsRepository.findParticipantPlace(queueId, userId)
+    const result = await this.participantsService.findParticipantPlace(queueId, userId)
     return Number.parseInt(result.beforeParticipants) + 1;
   }
 
@@ -98,13 +91,13 @@ export class QueuesService {
   async joinQueue(queueId: string, user: User): Promise<QueueParticipantDto> {
     const { id, username } = user;
     const queue = await this.findQueueById(queueId);
-    const participant = this.participantsRepository.create({
+    const participant = this.participantsService.create({
       queueId: queue.id,
       userId: id,
       joinDate: new Date(),
       votes: 0
     });
-    await this.participantsRepository.save(participant);
+    await this.participantsService.save(participant);
     const place = await this.getParticipantPlace(queueId, id);
 
     const dto: QueueParticipantDto = {
@@ -113,24 +106,5 @@ export class QueuesService {
       place
     }
     return dto;
-  }
-
-  async voteForParticipant(queueId: string, userId: string, user: User) {
-    const queue = await this.findQueueById(queueId);
-    const participant = await this.participantsRepository.findOne({ where: { queueId, userId } });
-
-    const vote = this.votesRepository.create({
-      queueId: queue.id,
-      participantId: participant.userId,
-      voterId: user.id,
-      votes: 1
-    });
-
-    await this.participantsRepository.update(
-      { queueId: participant.queueId, userId: participant.userId },
-      { votes: participant.votes + 1 }
-    );
-
-    await this.votesRepository.save(vote);
   }
 }

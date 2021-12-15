@@ -4,12 +4,18 @@ import { AuthModule } from '../auth/auth.module';
 import { QueuesRepository } from './queues.repository';
 import { QueuesService } from './queues.service';
 import { QueuesController } from './queues.controller';
-import { ParticipantsRepository } from 'src/participants/participants.repository';
-import { VotesRepository } from 'src/votes/votes.repository';
 import { QueueConveter } from './converter/queue.converter';
+import { ParticipantsModule } from 'src/participants/participants.module';
+import { VotesModule } from 'src/votes/votes.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([QueuesRepository, ParticipantsRepository, VotesRepository]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([QueuesRepository]),
+    AuthModule,
+    ParticipantsModule,
+    VotesModule,
+  ],
+  exports: [QueuesService],
   controllers: [QueuesController],
   providers: [QueuesService, QueueConveter],
 })

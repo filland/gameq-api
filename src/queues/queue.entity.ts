@@ -24,9 +24,4 @@ export class Queue {
 
   @ManyToOne(() => User, user => user.ownedQueues)
   owner: User
-
-  // @ManyToMany(() => User, { eager: false })
-  // @JoinTable({ name: "queues_users" })
-  // @Exclude({ toPlainOnly: true })
-  // participants: User[]
 }
